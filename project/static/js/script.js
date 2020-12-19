@@ -186,10 +186,14 @@ function buttonColorChange(buttonThis) {
     buttonRed();
   } else if (buttonThis.value === 'green') {
     buttonGreen();
+  } else if (buttonThis.value === 'blue') {
+    buttonBlue();
+  } else if (buttonThis.value === 'yellow') {
+    buttonYellow();
   } else if (buttonThis.value === 'reset') {
     buttonReset();
   } else if (buttonThis.value === 'random') {
-    randomColor();
+    randomColors();
   }
 }
 
@@ -207,6 +211,20 @@ function buttonGreen() {
   }
 }
 
+function buttonBlue() {
+  for (let i = 0; i < all_buttons.length; i++) {
+    all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+    all_buttons[i].classList.add('btn-primary');
+  }
+}
+
+function buttonYellow() {
+  for (let i = 0; 0 < all_buttons.length; i++) {
+    all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+    all_buttons[i].classList.add('btn-warning');
+  }
+}
+
 function buttonReset() {
   for (let i = 0; i < all_buttons.length; i++) {
     all_buttons[i].classList.remove(all_buttons[i].classList[1]);
@@ -214,12 +232,12 @@ function buttonReset() {
   }
 }
 
-function randomColor() {
-  let choices = ['btn-primary', 'btn-success', 'btn-warning'];
+function randomColors() {
+  let choices = ['btn-primary', 'btn-danger', 'btn-success', 'btn-warning'];
 
   for (let i = 0; 0 < all_buttons.length; i++) {
     let randomNumber = Math.floor(Math.random() * 4);
-    all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+    all_buttons[i].classList.remove(all_buttons[i].classList[1]); //ran into problems on this line for some reason... 
     all_buttons[i].classList.add(choices[randomNumber]);
   }
 }
