@@ -223,3 +223,6 @@ function randomColor() {
     all_buttons[i].classList.add(choices[randomNumber]);
   }
 }
+
+
+// testing pushhh
