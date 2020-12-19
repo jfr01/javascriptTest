@@ -224,5 +224,3 @@ function randomColor() {
   }
 }
 
-
-// testing push
