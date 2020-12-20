@@ -257,7 +257,7 @@ const hitSound = new Audio('static/sounds/swish.m4a');
 document.querySelector('#blackjack-hit-button').addEventListener('click', blackjackHit);
 
 function blackjackHit() {
-  showCard(DEALER);
+  showCard(YOU);
 }
 
 function showCard(activePlayer) {
