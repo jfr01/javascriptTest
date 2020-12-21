@@ -248,7 +248,12 @@ let blackjackGame = {
   'you': { 'scoreSpan': '#your-blackjack-result', 'div': '#your-box', 'score': 0 },
   'dealer': { 'scoreSpan': '#dealer-blackjack-result', 'div': '#dealer-box', 'score': 0 },
   'cards': ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'K', 'J', 'Q', 'A'],
-  'cardsMap': { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'K': 10, 'J': 10, 'Q': 10, 'A': [1, 11] }
+  'cardsMap': { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'K': 10, 'J': 10, 'Q': 10, 'A': [1, 11] },
+  'wins': 0,
+  'losses': 0,
+  'draws': 0,
+  'isStand': false,
+  'turnsOver': false,
 };
 
 const YOU = blackjackGame['you']
@@ -265,12 +270,12 @@ document.querySelector('#blackjack-stand-button').addEventListener('click', deal
 document.querySelector('#blackjack-deal-button').addEventListener('click', blackjackDeal);
 
 function blackjackHit() {
-  let card = randomCard();
-  //console.log(card);
-  showCard(card, YOU);
-  updateScore(card, YOU);
-  showScore(YOU);
-  // console.log(YOU['score']);
+  if (blackjackGame['isStand'] === false) {
+    let card = randomCard();
+    showCard(card, YOU);
+    updateScore(card, YOU);
+    showScore(YOU);
+  }
 }
 
 function randomCard() {
@@ -288,27 +293,36 @@ function showCard(card, activePlayer) {
 }
 
 function blackjackDeal() {
-  // showResult(computeWinner()); THIS function makes the game work with 2 players (no bot)
-  let yourImages = document.querySelector('#your-box').querySelectorAll('img');
-  let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
+  if (blackjackGame['turnsOver'] === true) {
 
-  for (i = 0; i < yourImages.length; i++) {
-    yourImages[i].remove();
+    blackjackGame['isStand'] = false;
+
+    // showResult(computeWinner()); THIS function makes the game work with 2 players (no bot)
+    let yourImages = document.querySelector('#your-box').querySelectorAll('img');
+    let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
+
+    for (i = 0; i < yourImages.length; i++) {
+      yourImages[i].remove();
+    }
+    for (i = 0; i < dealerImages.length; i++) {
+      dealerImages[i].remove();
+    }
+
+    YOU['score'] = 0;
+    DEALER['score'] = 0;
+
+    document.querySelector('#your-blackjack-result').textContent = 0;
+    document.querySelector('#dealer-blackjack-result').textContent = 0;
+
+    document.querySelector('#your-blackjack-result').style.color = '#ffffff';
+    document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
+
+    document.querySelector('#blackjack-result').textContent = "Lets Play!";
+    document.querySelector('#blackjack-result').style.color = 'black';
+
+    blackjackGame['turnsOver'] = true;
   }
-  for (i = 0; i < dealerImages.length; i++) {
-    dealerImages[i].remove();
-  }
-
-  YOU['score'] = 0;
-  DEALER['score'] = 0;
-
-  document.querySelector('#your-blackjack-result').textContent = 0;
-  document.querySelector('#dealer-blackjack-result').textContent = 0;
-
-  document.querySelector('#your-blackjack-result').style.color = '#ffffff';
-  document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
 }
-
 function updateScore(card, activePlayer) {
   if (card === 'A') {
     // If adding 11 keeps me below 21, add 11. Otherwise, add 1
@@ -334,13 +348,21 @@ function showScore(activePlayer) {
 }
 
 function dealerLogic() {
+  blackjackGame['isStand'] = true;
   let card = randomCard();
   showCard(card, DEALER);
   updateScore(card, DEALER);
   showScore(DEALER);
 
-}
 
+  // BOT LOGIC:
+  if (DEALER['score'] > 15) {
+    blackjackGame['turnsOver'] = true;
+    let winner = computeWinner();
+    showResult(winner);
+    console.log(blackjackGame['turnsOver']);
+  }
+}
 // compute winner and return who JUST won
 
 function computeWinner() {
@@ -349,50 +371,55 @@ function computeWinner() {
   if (YOU['score'] <= 21) {
     // condition: higher score than dealer or when dealer busts 
     if (YOU['score'] > DEALER['score'] || (DEALER['score'] > 21)) {
-      console.log('you won!');
+      blackjackGame['wins']++;
       winner = YOU;
     } else if (YOU['score'] < DEALER['score']) {
-      console.log('you lost');
+      blackjackGame['losses']++;
       winner = DEALER;
 
     } else if (YOU['score'] === DEALER['score']) {
-      console.log('you drew!');
+      blackjackGame['draws']++;
     }
 
     // condition: when user bust but dealer doesnt
   } else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
-    console.log('you lost');
+    blackjackGame['losses']++;
     winner = DEALER;
 
     // condition: when you AND the dealer bust
   } else if (YOU['score'] > 21 && DEALER['score'] > 21) {
-    console.log('you drew');
+    blackjackGame['draws']++;
   }
   console.log('winner is', winner);
+
+  console.log(blackjackGame);
   return winner;
 }
 
 function showResult(winner) {
   let message, messageColor;
 
-  if (winner === YOU) {
-    message = 'You Won!';
-    messageColor = 'green';
-    winSound.play();
+  if (blackjackGame['turnsOver'] === true) {
 
-  } else if (winner === DEALER) {
-    message = 'You Lost!';
-    messageColor = 'red';
-    lossSound.play();
+    if (winner === YOU) {
+      document.querySelector('#wins').textContent = blackjackGame['wins'];
+      message = 'You Won!';
+      messageColor = 'green';
+      winSound.play();
 
-  } else {
-    message = 'You Drew!';
-    MessageColor = 'black';
+    } else if (winner === DEALER) {
+      document.querySelector('#losses').textContent = blackjackGame['losses'];
+      message = 'You Lost!';
+      messageColor = 'red';
+      lossSound.play();
+
+    } else {
+      document.querySelector('#draws').textContent = blackjackGame['draws'];
+      message = 'You Drew!';
+      MessageColor = 'black';
+    }
+
+    document.querySelector('#blackjack-result').textContent = message;
+    document.querySelector('#blackjack-result').style.color = messageColor;
   }
-
-  document.querySelector('#blackjack-result').textContent = message;
-  document.querySelector('#blackjack-result').style.color = messageColor;
-
 }
-
-
