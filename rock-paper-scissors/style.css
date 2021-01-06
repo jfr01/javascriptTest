@@ -53,7 +53,7 @@ header > h1 {
 }
 
 .result {
-    font-size: 40px;
+    font-size: 25px;
     color: white;
 }
 
@@ -96,4 +96,19 @@ header > h1 {
     font-weight: bold;
     font-size: 20px;
     padding: 20px;
+}
+
+.green-glow {
+    border: 4px solid #4dcc7d;
+    box-shadow: 0 0 10px #31b43a
+}
+
+.red-glow {
+    border: 4px solid red;
+    box-shadow: 0 0 10px darkred;
+}
+
+.grey-glow {
+    border: 4px solid gray;
+    box-shadow: 0 0 10px darkgray;
 }

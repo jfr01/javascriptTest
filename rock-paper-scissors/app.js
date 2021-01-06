@@ -28,15 +28,23 @@ function win(userChoice, computerChoice) {
     userScore++;
     userScore_span.innerHTML = userScore;
     computerScore_span.innerHTML = computerScore;
-    result_p.innerHTML = convertToWord(userChoice) + " Beats " + convertToWord(computerChoice) + " You Win!";
+    result_p.innerHTML = convertToWord(userChoice) + '(user)' + " Beats " + convertToWord(computerChoice) + '(computer)' + " You Win!";
+    document.getElementById(userChoice).classList.add('green-glow');
+    setTimeout(function () { document.getElementById(userChoice).classList.remove('green-glow') }, 300);
 }
 
-function lose() {
-    console.log("user loses");
+
+function lose(userChoice, computerChoice) {
+    computerScore++;
+    userScore_span.innerHTML = userScore;
+    computerScore_span.innerHTML = computerScore;
+    result_p.innerHTML = convertToWord(userChoice) + '(user)' + " Loses to " + convertToWord(computerChoice) + '(computer)' + " You Lose!";
+    document.getElementById(userChoice).classList.add('red-glow');
+    setTimeout(function () { document.getElementById(userChoice).classList.remove('red-glow') }, 300);
 }
 
-function draw() {
-    console.log("draw");
+function draw(userChoice, computerChoice) {
+    result_p.innerHTML = convertToWord(userChoice) + '(user)' + " Draws " + convertToWord(computerChoice) + '(computer)' + "Its a DRAW";
 }
 
 function game(userChoice) {
